@@ -1,0 +1,83 @@
+---
+# 首页默认布局，会继承 _layouts/default.html 的结构
+layout: default
+---
+
+<!-- 首页文章列表容器 -->
+<div class="posts-list">
+  <!-- Jekyll 会遍历所有文章，并按时间倒序排列 -->
+  {% for post in paginator.posts %}
+    <!-- 每篇文章渲染为一个卡片 -->
+    <article class="post-card">
+      <!-- 文章标题，点击后进入文章详情页 -->
+      <h2 class="post-title">
+        <a href="{{ post.url | relative_url }}">
+          {{ post.title }}
+        </a>
+      </h2>
+
+      <!-- 文章元信息：日期、分类、标签 -->
+      <div class="post-meta">
+        <!-- 发布日期 -->
+        <time datetime="{{ post.date | date_to_xmlschema }}">
+          {{ post.date | date: "%Y年%m月%d日" }}
+        </time>
+
+        <!-- 文章分类，会显示为彩色标签 -->
+        {% if post.categories %}
+          <span class="post-category">
+            {% for category in post.categories %}
+              {{ category }}
+            {% endfor %}
+          </span>
+        {% endif %}
+
+        <!-- 文章标签 -->
+        {% if post.tags %}
+          <span class="post-tags">
+            {% for tag in post.tags %}
+              #{{ tag }}
+            {% endfor %}
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- 文章摘要，取自 frontmatter 的 description 或正文前几行 -->
+      <div class="post-excerpt">
+        {% if post.description %}
+          {{ post.description | markdownify | strip_html | truncatewords: 50 }}
+        {% else %}
+          {{ post.excerpt | strip_html | truncatewords: 50 }}
+        {% endif %}
+        <!-- 阅读全文链接 -->
+        <a href="{{ post.url | relative_url }}" class="read-more">阅读全文 →</a>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+
+<!-- 分页导航，如果文章数量超过每页显示数（在 _config.yml 中配置） -->
+{% if paginator.total_pages > 1 %}
+  <nav class="pagination">
+    <div class="pagination-links">
+      <!-- 上一页 -->
+      {% if paginator.previous_page %}
+        <a href="{{ paginator.previous_page_path | relative_url }}" class="prev-page">← 上一页</a>
+      {% else %}
+        <span class="prev-page disabled">← 上一页</span>
+      {% endif %}
+
+      <!-- 页码列表 -->
+      <span class="page-number">
+        第 {{ paginator.page }} / {{ paginator.total_pages }} 页
+      </span>
+
+      <!-- 下一页 -->
+      {% if paginator.next_page %}
+        <a href="{{ paginator.next_page_path | relative_url }}" class="next-page">下一页 →</a>
+      {% else %}
+        <span class="next-page disabled">下一页 →</span>
+      {% endif %}
+    </div>
+  </nav>
+{% endif %}
