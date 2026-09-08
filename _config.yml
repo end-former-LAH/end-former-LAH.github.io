@@ -1,1 +1,3 @@
 title: "最爱Leo宝宝"
+paginate: 5
+paginate_path: "/page:num/"
